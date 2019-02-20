@@ -42,3 +42,13 @@ kubectl -n opa delete cm app-validation
 kubectl -n opa create cm app-validation --from-file=app-validation.rego
 kubectl -n opa get cm app-validation -o yaml
 ```
+
+## Resources
+
+- https://github.com/open-policy-agent/kube-mgmt/blob/master/docs/admission-control-crd.md
+- https://www.openpolicyagent.org/docs/how-do-i-write-policies.html
+- https://medium.com/@mathurvarun98/how-to-write-great-rego-policies-dc6117679c9f
+- https://github.com/tsandall/dacp
+- https://github.com/open-policy-agent/opa/blob/master/docs/book/tutorials/kubernetes-admission-control-validation/ingress-conflicts.rego
+- https://github.com/teq0/opa-k8s-admission/blob/master/rego/mutation.rego
+- https://github.com/tsandall/opa-microservice-api-authz-demo/tree/master/policies
