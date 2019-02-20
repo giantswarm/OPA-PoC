@@ -1,0 +1,21 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: crd-reader
+rules:
+- apiGroups: ["application.giantswarm.io"]
+  resources: ["apps","appcatalogs"]
+  verbs: ["get", "list", "watch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: opa-crd-reader
+roleRef:
+  kind: ClusterRole
+  name: crd-reader
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: Group
+  name: system:serviceaccounts:opa
+  apiGroup: rbac.authorization.k8s.io

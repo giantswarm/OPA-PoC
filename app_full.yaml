@@ -1,0 +1,37 @@
+apiVersion: application.giantswarm.io/v1alpha1
+kind: App
+metadata:
+  name: my-cool-prometheus
+  namespace: 12345
+      
+  labels:
+    app: prometheus
+    app-operator.giantswarm.io/version: 1.0.0
+    giantswarm.io/cluster: 6iec4
+    giantswarm.io/organization: giantswarm
+    giantswarm.io/service-type: managed
+
+  annotations:
+    giantswarm.io/managed-by: app-operator
+
+spec:
+  catalog: giantswarm
+  name: prometheus
+  namespace: monitoring
+  version: 3.2.1
+      
+  config:
+    configMap:
+      name: prometheus-values
+      namespace: monitoring
+        
+    secret:
+      name: 
+      namespace: 
+      
+  kubeConfig: 
+    context:
+      name: giantswarm-12345
+    secret:
+      name: giantswarm-12345
+      namespace: 12345
