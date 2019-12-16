@@ -152,6 +152,22 @@ data:
       }
     }
 
+    isCreateOrUpdate {
+      isCreate
+    }
+
+    isCreateOrUpdate {
+      isUpdate
+    }
+
+    isCreate {
+      input.request.operation == "CREATE"
+    }
+
+    isUpdate {
+      input.request.operation == "UPDATE"
+    }
+
     ###########################################################################
     # PATCH helpers 
     # Note: These rules assume that the input is an object

@@ -59,6 +59,7 @@ kubectl -n opa get cm app-mutation -o yaml
 
 - https://www.openpolicyagent.org/docs/latest/kubernetes-tutorial/
 - https://gist.github.com/tsandall/f328635433acc5beeb4cb9b36295ee89
+- https://github.com/teq0/opa-k8s-admission/tree/master/rego
 
 - https://github.com/open-policy-agent/kube-mgmt/blob/master/docs/admission-control-crd.md
 - https://www.openpolicyagent.org/docs/how-do-i-write-policies.html
