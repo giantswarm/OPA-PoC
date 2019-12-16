@@ -47,7 +47,7 @@ kubectl -n opa create cm app-mutation --from-file=app-mutation.rego
 kubectl -n opa get cm app-mutation -o yaml
 ```
 
-Update and check an exisiting .rego file:
+Update and check an existing .rego file:
 
 ```bash
 kubectl -n opa delete cm app-mutation

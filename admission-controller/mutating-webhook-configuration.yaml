@@ -1,9 +1,9 @@
-kind: ValidatingWebhookConfiguration
+kind: MutatingWebhookConfiguration
 apiVersion: admissionregistration.k8s.io/v1beta1
 metadata:
-  name: opa-validating-webhook
+  name: opa-mutating-webhook
 webhooks:
-  - name: validating-webhook.openpolicyagent.org
+  - name: mutating-webhook.openpolicyagent.org
     rules:
       - operations: ["CREATE", "UPDATE"]
         apiGroups: ["application.giantswarm.io"]

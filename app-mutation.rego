@@ -1,4 +1,4 @@
-package kubernetes.admission
+package system
 
 # If namespace depicts clusterid, add cluster config
 # TODO could this be one patch?
@@ -11,8 +11,8 @@ patch[patchCode] {
     clusterid := input.request.object.metadata.namespace
 
     patchCode := {"op": "add",
-    "path": "request/object/spec/kubeConfig/secret/name",
-    "value": concat(clusterid, "-kubeconfig"),}
+    "path": "/request/object/spec/kubeConfig/secret/name",
+    "value": sprintf("%s-kubeconfig", [clusterid] ),}
 }
 patch[patchCode] {
     input.request.kind.kind = "App"
@@ -23,7 +23,7 @@ patch[patchCode] {
     clusterid := input.request.object.metadata.namespace
 
     patchCode := {"op": "add",
-    "path": "request/object/spec/kubeConfig/secret/namespace",
+    "path": "/request/object/spec/kubeConfig/secret/namespace",
     "value": clusterid,}
 }
 patch[patchCode] {
@@ -35,7 +35,7 @@ patch[patchCode] {
     clusterid := input.request.object.metadata.namespace
 
     patchCode := {"op": "add",
-    "path": "request/object/spec/kubeConfig/context/name",
+    "path": "/request/object/spec/kubeConfig/context/name",
     "value": clusterid,}
 }
 patch[patchCode] {
@@ -47,17 +47,18 @@ patch[patchCode] {
     clusterid := input.request.object.metadata.namespace
 
     patchCode := {"op": "add",
-    "path": "request/object/spec/kubeConfig/inCluster",
+    "path": "/request/object/spec/kubeConfig/inCluster",
     "value": "false",}
 }
 # TODO add here config, CM and secret
 
 # Add all the required labels
 # TODO do this also for appCatalogs
+# TODO see how to escape "/"
 patch[patchCode] {
     input.request.kind.kind = "App"
     isCreateOrUpdate
 
-    not hasLabelValue[["app-operator.giantswarm.io/version", "1.0.0"]] with input as input.request.object
-	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io/version", "1.0.0", "")
+    not hasLabelValue[["app-operator.giantswarm.io", "1.0.0"]] with input as input.request.object
+	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io", "1.0.0", "")
 }

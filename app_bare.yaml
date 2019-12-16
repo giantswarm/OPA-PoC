@@ -2,7 +2,7 @@ apiVersion: application.giantswarm.io/v1alpha1
 kind: App
 metadata:
   name: my-cool-prometheus
-  namespace: 12345
+  namespace: "12345"
 spec:
   catalog: giantswarm
   name: prometheus
