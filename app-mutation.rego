@@ -2,6 +2,7 @@ package system
 
 # If namespace depicts clusterid, add cluster config
 # TODO could this be one patch?
+# Shortest patch to path must be first, as otherwise path creation will fail!!
 patch[patchCode] {
     input.request.kind.kind = "App"
     # only on create as user might have valid reason to change
@@ -11,7 +12,19 @@ patch[patchCode] {
     clusterid := input.request.object.metadata.namespace
 
     patchCode := {"op": "add",
-    "path": "/request/object/spec/kubeConfig/secret/name",
+    "path": "/spec/kubeConfig/inCluster",
+    "value": "false",}
+}
+patch[patchCode] {
+    input.request.kind.kind = "App"
+    # only on create as user might have valid reason to change
+    isCreate
+
+    # TODO check if namespace is actually cluster namespace, to only run this for clsuter name space
+    clusterid := input.request.object.metadata.namespace
+
+    patchCode := {"op": "add",
+    "path": "/spec/kubeConfig/secret/name",
     "value": sprintf("%s-kubeconfig", [clusterid] ),}
 }
 patch[patchCode] {
@@ -23,7 +36,7 @@ patch[patchCode] {
     clusterid := input.request.object.metadata.namespace
 
     patchCode := {"op": "add",
-    "path": "/request/object/spec/kubeConfig/secret/namespace",
+    "path": "/spec/kubeConfig/secret/namespace",
     "value": clusterid,}
 }
 patch[patchCode] {
@@ -35,20 +48,8 @@ patch[patchCode] {
     clusterid := input.request.object.metadata.namespace
 
     patchCode := {"op": "add",
-    "path": "/request/object/spec/kubeConfig/context/name",
+    "path": "/spec/kubeConfig/context/name",
     "value": clusterid,}
-}
-patch[patchCode] {
-    input.request.kind.kind = "App"
-    # only on create as user might have valid reason to change
-    isCreate
-
-    # TODO check if namespace is actually cluster namespace, to only run this for clsuter name space
-    clusterid := input.request.object.metadata.namespace
-
-    patchCode := {"op": "add",
-    "path": "/request/object/spec/kubeConfig/inCluster",
-    "value": "false",}
 }
 # TODO add here config, CM and secret
 
