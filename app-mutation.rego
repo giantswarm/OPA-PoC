@@ -1,7 +1,5 @@
 package kubernetes.admission
 
-import data.kubernetes.appcatalogs
-
 patch[p] {
     input.request.kind.kind = "App"
     input.request.operation = "CREATE"
