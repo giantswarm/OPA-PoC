@@ -131,6 +131,6 @@ input_path_exists(path) {
 
 # Dummy patch to please the compiler
 patch[patchCode] {
-	input.kind == "App"
-	patchCode = makeLabelPatch("add", "foo", "bar", "")
+	input.kind == "ThisHadBetterNotBeARealKind"
+	patchCode = {}
 }
