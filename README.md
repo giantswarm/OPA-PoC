@@ -16,13 +16,13 @@ go run main.go daemon --service.kubernetes.incluster=false \
   --service.kubernetes.tls.keyfile="$HOME/.minikube/client.key"
 ```
 
-There's a YAML copy (from 19.02.2019) of the CRDs at https://github.com/giantswarm/OPA-PoC/blob/master/CRDs.yaml, which should work alternatively.
+There's a YAML copy (from 16.12.2019) of the CRDs at https://github.com/giantswarm/OPA-PoC/blob/master/CRDs.yaml, which should work alternatively.
 
 ### Install OPA Admission controller
 
-Install OPA and admission control webhook as described in https://www.openpolicyagent.org/docs/kubernetes-admission-control.html.
+Install OPA and admission control webhook as described in https://www.openpolicyagent.org/docs/latest/kubernetes-tutorial/.
 
-Check and apply the custom YAMLs in https://github.com/giantswarm/OPA-PoC/tree/master/admission-controller. You can apply RBAC and admission controller as commited to this repo, but you need to change the webhook config to reflect your CA bundle.
+Check and apply the custom YAMLs in https://github.com/giantswarm/OPA-PoC/tree/master/admission-controller. You can apply RBAC and admission controller as committed to this repo, but you need to change the webhook config to reflect your CA bundle.
 
 You should now have an OPA admission controller that knows about app and appCatalog CRDs running in your minikube.
 
