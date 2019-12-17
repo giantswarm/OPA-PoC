@@ -2,13 +2,29 @@ package system
 
 import data.kubernetes.namespaces
 
+isAppOrAppCatalog {
+    isApp
+}
+
+isAppOrAppCatalog {
+    isAppCatalog
+}
+
+isApp {
+    input.request.kind.kind = "App"
+}
+
+isAppCatalog {
+    input.request.kind.kind = "AppCatalog"
+}
+
 # If namespace depicts clusterid, add cluster config
 # We only do these on create as user might have valid reason to change
 # TODO could this be one patch? or at least can we extract the common checks?
 # Couldn't make it one patch because of limitations of the ensure path functions
 # Shortest patch to path must be first, as otherwise path creation will fail!!
 patch[patchCode] {
-    input.request.kind.kind = "App"
+    isApp
     isCreate
 
     # Checks if namespace is actually a cluster namespace
@@ -24,7 +40,7 @@ patch[patchCode] {
     "value": "false",}
 }
 patch[patchCode] {
-    input.request.kind.kind = "App"
+    isApp
     isCreate
 
     # Checks if namespace is actually a cluster namespace
@@ -40,7 +56,7 @@ patch[patchCode] {
    "value": sprintf("%s-kubeconfig", [clusterid] ),}
 }
 patch[patchCode] {
-    input.request.kind.kind = "App"
+    isApp
     isCreate
 
     # Checks if namespace is actually a cluster namespace
@@ -56,7 +72,7 @@ patch[patchCode] {
     "value": clusterid,}
 }
 patch[patchCode] {
-    input.request.kind.kind = "App"
+    isApp
     isCreate
 
     # Checks if namespace is actually a cluster namespace
@@ -74,10 +90,9 @@ patch[patchCode] {
 # TODO add here config, CM and secret
 
 # Add all the required labels (currently only operator version)
-# TODO do this also for appCatalogs
-# TODO see how to escape "/" as it should be "app-operator.giantswarm.io/version"
+# TODO see how to escape "/" as it should be "app-operator.giantswarm.io/version", maybe \
 patch[patchCode] {
-    input.request.kind.kind = "App"
+    isAppOrAppCatalog
     isCreateOrUpdate
 
     # This is a hardcoded value as we are not changing the operator version for now
