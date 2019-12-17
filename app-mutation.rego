@@ -21,8 +21,9 @@ isAppCatalog {
 # If namespace depicts clusterid, add cluster config
 # We only do these on create as user might have valid reason to change
 # TODO could this be one patch? or at least can we extract the common checks?
-# Couldn't make it one patch because of limitations of the ensure path functions
-# Shortest patch to path must be first, as otherwise path creation will fail!!
+# Limitations due to ensure paths functions in core.rego
+# Couldn't make it one patch (functions need single objects)
+# Shortest patch to path must be first, as otherwise path order is wrong and creation will fail!
 patch[patchCode] {
     isApp
     isCreate
@@ -35,6 +36,8 @@ patch[patchCode] {
     namespace.metadata.labels.cluster
     clusterid := namespace.metadata.name
 
+    # TODO maybe abstract spec patch similar to labels/annotations
+    not input.request.object.spec.kubeConfig
     patchCode := {"op": "add",
     "path": "/spec/kubeConfig/inCluster",
     "value": "false",}
@@ -51,6 +54,7 @@ patch[patchCode] {
     namespace.metadata.labels.cluster
     clusterid := namespace.metadata.name
    
+   not input.request.object.spec.kubeConfig
    patchCode := {"op": "add",
    "path": "/spec/kubeConfig/secret/name",
    "value": sprintf("%s-kubeconfig", [clusterid] ),}
@@ -67,6 +71,7 @@ patch[patchCode] {
     namespace.metadata.labels.cluster
     clusterid := namespace.metadata.name
 
+    not input.request.object.spec.kubeConfig
     patchCode := {"op": "add",
     "path": "/spec/kubeConfig/secret/namespace",
     "value": clusterid,}
@@ -83,6 +88,7 @@ patch[patchCode] {
     namespace.metadata.labels.cluster
     clusterid := namespace.metadata.name
 
+    not input.request.object.spec.kubeConfig
     patchCode := {"op": "add",
     "path": "/spec/kubeConfig/context/name",
     "value": clusterid,}
@@ -90,12 +96,12 @@ patch[patchCode] {
 # TODO add here config, CM and secret
 
 # Add all the required labels (currently only operator version)
-# TODO see how to escape "/" as it should be "app-operator.giantswarm.io/version", maybe \
 patch[patchCode] {
     isAppOrAppCatalog
     isCreateOrUpdate
 
-    # This is a hardcoded value as we are not changing the operator version for now
-    not hasLabelValue[["app-operator.giantswarm.io", "1.0.0"]] with input as input.request.object
-	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io", "1.0.0", "")
+    # 1.0.0 is a hardcoded value as we are not changing the operator version for now
+    # ~1 is the RFC conform way of escaping / in JSON Patches
+    not hasLabelValue[["app-operator.giantswarm.io~1version", "1.0.0"]] with input as input.request.object
+	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io~1version", "1.0.0", "")
 }
