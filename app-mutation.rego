@@ -52,7 +52,7 @@ patch[patchCode] {
     clusterid := namespace.metadata.name
    
    not input.request.object.spec.kubeConfig
-   patchCode := makeSpecPatch("add", "kubeConfig/secret/name", sprintf("%s-kubeconfig", [clusterid] ), "")
+   patchCode := makeSpecPatch("add", "kubeConfig/secret/name", sprintf("%s-kubeconfig", [clusterid]), "")
 }
 patch[patchCode] {
     isApp
@@ -84,15 +84,78 @@ patch[patchCode] {
     not input.request.object.spec.kubeConfig
     patchCode := makeSpecPatch("add", "kubeConfig/context/name", clusterid, "")
 }
-# TODO add here config, CM and secret
+patch[patchCode] {
+    isApp
+    isCreate
+    
+    # Checks if namespace is actually a cluster namespace
+    ns := input.request.object.metadata.namespace
+    some i
+    namespaces[i].metadata.name == ns
+    namespace := namespaces[i]
+    namespace.metadata.labels.cluster
+    clusterid := namespace.metadata.name
+
+    not input.request.object.spec.config
+    # create configMap path
+    patchCode := makeSpecPatch("add", "config/configMap", {}, "")
+}
+patch[patchCode] {
+    isApp
+    isCreate
+    # ingress controller has special config
+    input.request.object.spec.name == "nginx-ingress-controller-app"
+
+    # Checks if namespace is actually a cluster namespace
+    ns := input.request.object.metadata.namespace
+    some i
+    namespaces[i].metadata.name == ns
+    namespace := namespaces[i]
+    namespace.metadata.labels.cluster
+    clusterid := namespace.metadata.name
+
+    not input.request.object.spec.config
+    patchCode := makeSpecPatch("add", "config/configMap/name", "ingress-controller-values", "")
+}
+patch[patchCode] {
+    isApp
+    isCreate
+    not input.request.object.spec.name == "nginx-ingress-controller-app"
+
+    # Checks if namespace is actually a cluster namespace
+    ns := input.request.object.metadata.namespace
+    some i
+    namespaces[i].metadata.name == ns
+    namespace := namespaces[i]
+    namespace.metadata.labels.cluster
+    clusterid := namespace.metadata.name
+
+    not input.request.object.spec.config
+    patchCode := makeSpecPatch("add", "config/configMap/name", sprintf("%s-cluster-values", [clusterid]), "")
+}
+patch[patchCode] {
+    isApp
+    isCreate
+
+    # Checks if namespace is actually a cluster namespace
+    ns := input.request.object.metadata.namespace
+    some i
+    namespaces[i].metadata.name == ns
+    namespace := namespaces[i]
+    namespace.metadata.labels.cluster
+    clusterid := namespace.metadata.name
+
+    not input.request.object.spec.config
+    patchCode := makeSpecPatch("add", "config/configMap/namespace", clusterid, "")
+}
 
 # Add all the required labels (currently only operator version)
-patch[patchCode] {
-    isAppOrAppCatalog
-    isCreateOrUpdate
-
-    # 1.0.0 is a hardcoded value as we are not changing the operator version for now
-    # ~1 is the RFC conform way of escaping / in JSON Patches
-    not hasLabelValue[["app-operator.giantswarm.io~1version", "1.0.0"]] with input as input.request.object
-	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io~1version", "1.0.0", "")
-}
+#patch[patchCode] {
+#    isAppOrAppCatalog
+#    isCreateOrUpdate
+#
+#    # 1.0.0 is a hardcoded value as we are not changing the operator version for now
+#    # ~1 is the RFC conform way of escaping / in JSON Patches
+#    not hasLabelValue[["app-operator.giantswarm.io~1version", "1.0.0"]] with input as input.request.object
+#	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io~1version", "1.0.0", "")
+#}
