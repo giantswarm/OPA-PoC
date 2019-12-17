@@ -36,11 +36,8 @@ patch[patchCode] {
     namespace.metadata.labels.cluster
     clusterid := namespace.metadata.name
 
-    # TODO maybe abstract spec patch similar to labels/annotations
     not input.request.object.spec.kubeConfig
-    patchCode := {"op": "add",
-    "path": "/spec/kubeConfig/inCluster",
-    "value": "false",}
+    patchCode := makeSpecPatch("add", "kubeConfig/inCluster", "false", "")
 }
 patch[patchCode] {
     isApp
@@ -55,9 +52,7 @@ patch[patchCode] {
     clusterid := namespace.metadata.name
    
    not input.request.object.spec.kubeConfig
-   patchCode := {"op": "add",
-   "path": "/spec/kubeConfig/secret/name",
-   "value": sprintf("%s-kubeconfig", [clusterid] ),}
+   patchCode := makeSpecPatch("add", "kubeConfig/secret/name", sprintf("%s-kubeconfig", [clusterid] ), "")
 }
 patch[patchCode] {
     isApp
@@ -72,9 +67,7 @@ patch[patchCode] {
     clusterid := namespace.metadata.name
 
     not input.request.object.spec.kubeConfig
-    patchCode := {"op": "add",
-    "path": "/spec/kubeConfig/secret/namespace",
-    "value": clusterid,}
+    patchCode := makeSpecPatch("add", "kubeConfig/secret/namespace", clusterid, "")
 }
 patch[patchCode] {
     isApp
@@ -89,9 +82,7 @@ patch[patchCode] {
     clusterid := namespace.metadata.name
 
     not input.request.object.spec.kubeConfig
-    patchCode := {"op": "add",
-    "path": "/spec/kubeConfig/context/name",
-    "value": clusterid,}
+    patchCode := makeSpecPatch("add", "kubeConfig/context/name", clusterid, "")
 }
 # TODO add here config, CM and secret
 

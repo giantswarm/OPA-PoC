@@ -86,6 +86,13 @@ makeAnnotationPatch(op, key, value, pathPrefix) = patchCode {
     "value": value,
   }
 }
+makeSpecPatch(op, key, value, pathPrefix) = patchCode {
+  patchCode = {
+    "op": op,
+    "path": concat("/", [pathPrefix, "spec", key]),
+    "value": value,
+  }
+}
 # (Thanks to Tim Hinrichs for the following...)
 # Given array of JSON patches create and prepend new patches that create missing paths.
 #   CAUTION: Implementation only creates leaves.
