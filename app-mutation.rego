@@ -5,10 +5,10 @@ import data.kubernetes.namespaces
 # If namespace depicts clusterid, add cluster config
 # We only do these on create as user might have valid reason to change
 # TODO could this be one patch? or at least can we extract the common checks?
+# Couldn't make it one patch because of limitations of the ensure path functions
 # Shortest patch to path must be first, as otherwise path creation will fail!!
 patch[patchCode] {
     input.request.kind.kind = "App"
-
     isCreate
 
     # Checks if namespace is actually a cluster namespace
@@ -25,23 +25,31 @@ patch[patchCode] {
 }
 patch[patchCode] {
     input.request.kind.kind = "App"
-
     isCreate
 
-    # TODO check if namespace is actually cluster namespace, to only run this for clsuter name space
-    clusterid := input.request.object.metadata.namespace
-
-    patchCode := {"op": "add",
-    "path": "/spec/kubeConfig/secret/name",
-    "value": sprintf("%s-kubeconfig", [clusterid] ),}
+    # Checks if namespace is actually a cluster namespace
+    ns := input.request.object.metadata.namespace
+    some i
+    namespaces[i].metadata.name == ns
+    namespace := namespaces[i]
+    namespace.metadata.labels.cluster
+    clusterid := namespace.metadata.name
+   
+   patchCode := {"op": "add",
+   "path": "/spec/kubeConfig/secret/name",
+   "value": sprintf("%s-kubeconfig", [clusterid] ),}
 }
 patch[patchCode] {
     input.request.kind.kind = "App"
-
     isCreate
 
-    # TODO check if namespace is actually cluster namespace, to only run this for clsuter name space
-    clusterid := input.request.object.metadata.namespace
+    # Checks if namespace is actually a cluster namespace
+    ns := input.request.object.metadata.namespace
+    some i
+    namespaces[i].metadata.name == ns
+    namespace := namespaces[i]
+    namespace.metadata.labels.cluster
+    clusterid := namespace.metadata.name
 
     patchCode := {"op": "add",
     "path": "/spec/kubeConfig/secret/namespace",
@@ -49,11 +57,15 @@ patch[patchCode] {
 }
 patch[patchCode] {
     input.request.kind.kind = "App"
-    # only on create as user might have valid reason to change
     isCreate
 
-    # TODO check if namespace is actually cluster namespace, to only run this for cluster name space
-    clusterid := input.request.object.metadata.namespace
+    # Checks if namespace is actually a cluster namespace
+    ns := input.request.object.metadata.namespace
+    some i
+    namespaces[i].metadata.name == ns
+    namespace := namespaces[i]
+    namespace.metadata.labels.cluster
+    clusterid := namespace.metadata.name
 
     patchCode := {"op": "add",
     "path": "/spec/kubeConfig/context/name",
