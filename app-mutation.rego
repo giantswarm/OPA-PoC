@@ -150,12 +150,12 @@ patch[patchCode] {
 }
 
 # Add all the required labels (currently only operator version)
-#patch[patchCode] {
-#    isAppOrAppCatalog
-#    isCreateOrUpdate
-#
-#    # 1.0.0 is a hardcoded value as we are not changing the operator version for now
-#    # ~1 is the RFC conform way of escaping / in JSON Patches
-#    not hasLabelValue[["app-operator.giantswarm.io~1version", "1.0.0"]] with input as input.request.object
-#	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io~1version", "1.0.0", "")
-#}
+patch[patchCode] {
+    isAppOrAppCatalog
+    isCreateOrUpdate
+
+    # 1.0.0 is a hardcoded value as we are not changing the operator version for now
+    # ~1 is the RFC conform way of escaping / in JSON Patches
+    not hasLabelValue[["app-operator.giantswarm.io~1version", "1.0.0"]] with input as input.request.object
+	patchCode = makeLabelPatch("add", "app-operator.giantswarm.io~1version", "1.0.0", "")
+}
