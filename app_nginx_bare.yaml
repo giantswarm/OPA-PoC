@@ -1,10 +1,10 @@
 apiVersion: application.giantswarm.io/v1alpha1
 kind: App
 metadata:
-  name: my-cool-prometheus
-  namespace: 12345
+  name: my-cool-nginx
+  namespace: "12345"
 spec:
-  catalog: hack
-  name: prometheus
+  catalog: giantswarm
+  name: nginx-ingress-controller-app
   namespace: monitoring
   version: 3.2.1
