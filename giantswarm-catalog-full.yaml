@@ -20,4 +20,4 @@ spec:
   logoURL: "https://s.giantswarm.io/..."
   storage:
     type: helm
-    URL: "https://giantswarm.github.com/app-catalog/"
+    URL: "https://giantswarm.github.io/app-catalog/"
