@@ -103,24 +103,6 @@ patch[patchCode] {
 patch[patchCode] {
     isApp
     isCreate
-    # ingress controller has special config
-    input.request.object.spec.name == "nginx-ingress-controller-app"
-
-    # Checks if namespace is actually a cluster namespace
-    ns := input.request.object.metadata.namespace
-    some i
-    namespaces[i].metadata.name == ns
-    namespace := namespaces[i]
-    namespace.metadata.labels.cluster
-    clusterid := namespace.metadata.name
-
-    not input.request.object.spec.config
-    patchCode := makeSpecPatch("add", "config/configMap/name", "ingress-controller-values", "")
-}
-patch[patchCode] {
-    isApp
-    isCreate
-    not input.request.object.spec.name == "nginx-ingress-controller-app"
 
     # Checks if namespace is actually a cluster namespace
     ns := input.request.object.metadata.namespace
