@@ -63,13 +63,6 @@ kubectl apply -f app_bare.yaml
 kubectl -n 12345 get app my-cool-prometheus -o yaml
 ```
 
-Apply and check a bare NGINX IC app CR. The resulting app CR should look similar to above, but with `ingress-controller-values` instead of `12345-cluster-values` in the cluster ConfigMap.
-
-```bash
-kubectl apply -f app_nginx_bare.yaml
-kubectl -n 12345 get app my-cool-nginx -o yaml
-```
-
 Apply and check an appcatalog CR. You should see an added label depicting the operator version.
 
 ```bash
